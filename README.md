@@ -19,6 +19,7 @@ Check also [this blog post](https://medium.com/@lhartikk/a-blockchain-in-200-lin
 - Super simple "protocols" in P2P communication
 - Data is not persisted in nodes
 - No proof-of-work or proof-of-stake: a block can be added to the blockchain without competition
+- Sample data scripts
 
 ![alt tag](naivechain_blockchain.png)
 
