@@ -29,7 +29,7 @@ const getGenesisBlock = () =>
     0,
     '0',
     1465154705,
-    'my genesis block!!',
+    'Erster Block!',
     '816534932c2b7154836da6afc367695e6337db8a921823784c14378abed4f7d7'
   );
 
@@ -39,7 +39,9 @@ const initHttpServer = () => {
   const app = express();
   app.use(bodyParser.json());
 
-  app.get('/blocks', (req, res) => res.send(JSON.stringify(blockchain)));
+  app.get('/blocks', (req, res) => {
+    res.json(blockchain);
+  });
   app.post('/mineBlock', (req, res) => {
     const newBlock = generateNextBlock(req.body.data);
     addBlock(newBlock);
@@ -150,8 +152,8 @@ const handleBlockchainResponse = message => {
   const latestBlockHeld = getLatestBlock();
   if (latestBlockReceived.index > latestBlockHeld.index) {
     console.log(
-      `blockchain possibly behind. We got: ${latestBlockHeld.index} Peer got: ${
-        latestBlockReceived.index
+      `blockchain possibly behind. We got: ${latestBlockHeld.index + 1} Peer got: ${
+        latestBlockReceived.index + 1
       }`
     );
     if (latestBlockHeld.hash === latestBlockReceived.previousHash) {

@@ -1,4 +1,4 @@
-FROM node:4.6
+FROM node:6.0
 
 RUN mkdir /naivechain
 ADD package.json /naivechain/
