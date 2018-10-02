@@ -1,7 +1,10 @@
 const CryptoJS = require('crypto-js');
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const WebSocket = require('ws');
+
+const { spawn } = require('child_process');
 
 const httpPort = process.env.HTTP_PORT || 3001;
 const p2pPort = process.env.P2P_PORT || 6001;
@@ -29,18 +32,35 @@ const getGenesisBlock = () =>
     0,
     '0',
     1465154705,
-    'Erster Block!',
-    '816534932c2b7154836da6afc367695e6337db8a921823784c14378abed4f7d7'
+    'Genesis Block!',
+    'c49d7346eb8cee06e14763af37235436f3343e76570eb1ca66bdc9f5002d7ea7'
   );
 
 let blockchain = [getGenesisBlock()];
 
 const initHttpServer = () => {
   const app = express();
-  app.use(bodyParser.json());
+  app.use(cors());
+  
+  app.use(
+    bodyParser.json()
+  );
 
   app.get('/blocks', (req, res) => {
     res.json(blockchain);
+  });
+  app.post('/addNode', (req, res) => {
+    const child = spawn('node', ['main.js'], {
+      shell: true,
+      stdio: 'ignore',
+      env: { 
+        HTTP_PORT: 3002, 
+        P2P_PORT: 6002,
+        PEERS: "ws://localhost:6001"
+      }
+    });
+
+    res.send();
   });
   app.post('/mineBlock', (req, res) => {
     const newBlock = generateNextBlock(req.body.data);
@@ -62,7 +82,7 @@ const initHttpServer = () => {
 const initP2PServer = () => {
   const server = new WebSocket.Server({ port: p2pPort });
   server.on('connection', ws => initConnection(ws));
-  console.log(`listening websocket p2p port on: ${p2pPort}`);
+  console.log(`Listening websocket p2p port on: ${p2pPort}`);
 };
 
 const initConnection = ws => {
@@ -171,6 +191,7 @@ const handleBlockchainResponse = message => {
     console.log('received blockchain is not longer than current blockchain. Do nothing');
   }
 };
+
 
 const replaceChain = newBlocks => {
   if (isValidChain(newBlocks) && newBlocks.length > blockchain.length) {

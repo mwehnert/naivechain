@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>NaiveChain Web interface</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+        <link rel="stylesheet" href="naivechain.css" />
+    </head>
+    <body>
+
+        <h1>NaiveChain Web interface</h1>
+
+        <table class="grid">
+            <thead>
+                <tr>
+                    <th>Node 1</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input data-bind="value: newBlockData">
+                        <button data-bind="click: mineBlock">Block erstellen</button>
+
+                        <table data-bind="visible: blocks().length > 0">
+                            <thead>
+                                <tr>
+                                    <th>Index</th>
+                                    <th>Hash</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: blocks">
+                                <tr>
+                                    <td><span data-bind="text: index"></span></td>
+                                    <td><span data-bind="text: hash"></span></td>
+                                    <td><span data-bind="text: data"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button data-bind="click: addNode">Node hinzufügen</button>
+
+        <script src="naivechain.js"></script>
+    </body>
+</html>

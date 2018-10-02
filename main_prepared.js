@@ -14,6 +14,11 @@ const initialPeers = process.env.PEERS ? process.env.PEERS.split(',') : [];
  */
 class Block {
   constructor() {
+    this.index = index;
+    this.timestamp = timestamp;
+    this.data = data;
+    this.hash = hash;
+    this.previousHash = previousHash;
     // - Nummerierung
     // - Zeitstempel
     // - Daten

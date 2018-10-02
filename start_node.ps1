@@ -14,4 +14,8 @@ if ($ConnectToNode1) {
     $env:PEERS = "ws://localhost:6001"
 }
 
-npm start
+if ($PortOffset -eq 1) {
+    npm run debug
+} else {
+    npm start
+}
