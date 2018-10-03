@@ -1,5 +1,6 @@
 const CryptoJS = require('crypto-js');
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const WebSocket = require('ws');
@@ -37,37 +38,57 @@ const getGenesisBlock = () =>
   );
 
 let blockchain = [getGenesisBlock()];
+let nodes = [1];
 
 const initHttpServer = () => {
   const app = express();
   app.use(cors());
+  app.use(express.static('wwwroot'));
   
   app.use(
     bodyParser.json()
   );
 
-  app.get('/blocks', (req, res) => {
-    res.json(blockchain);
+  app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname + '/index.html'));
   });
+
+  app.get('/nodes', (req, res) => {
+    res.json(nodes);
+  });
+
   app.post('/addNode', (req, res) => {
+    var index = req.body.index;
+
     const child = spawn('node', ['main.js'], {
       shell: true,
       stdio: 'ignore',
-      env: { 
-        HTTP_PORT: 3002, 
-        P2P_PORT: 6002,
+      env: {
+        HTTP_PORT: 3000 + parseInt(index),
+        P2P_PORT: 6000 + parseInt(index),
         PEERS: "ws://localhost:6001"
       }
     });
 
+    nodes.push(parseInt(index));
+
     res.send();
   });
+
+  app.get('/blocks', (req, res) => {
+    setTimeout(function() {
+      res.json(blockchain);
+    }, 1000);
+  });
+
   app.post('/mineBlock', (req, res) => {
     const newBlock = generateNextBlock(req.body.data);
     addBlock(newBlock);
-    broadcast(responseLatestMsg());
-    console.log(`block added: ${JSON.stringify(newBlock)}`);
-    res.send();
+    setTimeout(function() {
+      broadcast(responseLatestMsg());
+      console.log(`block added: ${JSON.stringify(newBlock)}`);
+      res.send();
+  }, 2500);
   });
   app.get('/peers', (req, res) => {
     res.send(sockets.map(s => `${s._socket.remoteAddress}:${s._socket.remotePort}`));
@@ -172,7 +193,7 @@ const handleBlockchainResponse = message => {
   const latestBlockHeld = getLatestBlock();
   if (latestBlockReceived.index > latestBlockHeld.index) {
     console.log(
-      `blockchain possibly behind. We got: ${latestBlockHeld.index + 1} Peer got: ${
+      `blockchain possibly behind. We have: ${latestBlockHeld.index + 1} Peer got: ${
         latestBlockReceived.index + 1
       }`
     );

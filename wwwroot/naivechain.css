@@ -1,0 +1,34 @@
+table.grid {
+    width: 100%;
+}
+
+table.grid th {
+    text-align: left;
+}
+
+ul {
+    padding-left: 0;
+}
+ul li {
+    display: inline-block;
+    position: relative;
+    margin: 20px;
+    border: 3px solid gray;
+    padding: 10px;
+}
+
+.spinner {
+    position: absolute;
+    top: 150px; /* 50%; */
+    left: 50%;
+    margin-left: -50px; /* half width of the spinner gif */
+    /* margin-top: -50px; half height of the spinner gif */
+    text-align: center;
+    z-index:1234;
+    overflow: auto;
+}
+
+table.loading {
+    /* background-color: gray; */
+    opacity: 0.2;
+}
